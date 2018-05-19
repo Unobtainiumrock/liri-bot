@@ -1,0 +1,10 @@
+
+##NPM##
+node_modules
+
+##VSC##
+.vscode/*
+
+##API KEYS##
+keys.js
+
