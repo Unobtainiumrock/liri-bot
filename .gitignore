@@ -8,3 +8,5 @@ node_modules
 ##API KEYS##
 keys.js
 
+##ENVIRONMENT##
+.env
