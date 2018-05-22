@@ -8,17 +8,23 @@ const Spotify = require('node-spotify-api');
 const Twitter = require('twitter');
 const request = require('request-promise-native');
 const param = require('jquery-param');
+const fs = require('fs');
+
+const randomTextFile = fs.readdirSync(__dirname).filter(file => file === 'random.txt')[0];
+const randomText = fs.readFileSync(randomTextFile, 'utf-8').split('');
 
 
 const spotify_with_keys = new Spotify(api_keys.spotify);
 const twitter_with_keys = new Twitter(api_keys.twitter);
 const terminalArg = process.argv[2];
 
-// * `do-what-it-says`
-
-
 // Wrapping the core logic inside an async IIFE so that we can use the async/await syntax.
 (async () => {
+
+  if (terminalArg === 'do-what-it-says') {
+    doWhatItSays();
+  }
+
   if (terminalArg === 'my-tweets') {
     let userName = process.argv[3];
     let tweets = await getTweets(userName);
@@ -37,7 +43,7 @@ const terminalArg = process.argv[2];
   if (terminalArg === 'movie-this') {
     let movie = process.argv.slice(3).join(' ');
     let movieInfo = await getMovie(movie);
-    for(let key in movieInfo) {
+    for (let key in movieInfo) {
       console.log(`${key}: ${movieInfo[key]}`);
     }
   }
@@ -128,5 +134,42 @@ function getMovie(t) {
 }
 
 function doWhatItSays() {
+  let commands = [];
+  let command = '';
+  let arg = '';
+  let key = true;
 
+  for (let i = 0; i < randomText.length; i++) {
+    if (randomText[i] !== '\n' && randomText[i] !== ' ' && key) {
+      command += randomText[i];
+    } else {
+        arg += randomText[i];
+    }
+
+    if (randomText[i] === ' ') {
+      key = false;
+    }
+
+    if (randomText[i] === '\n') {
+      commands.push({
+        command,
+        arg: arg.slice(0,-1)
+      })
+      command = '';
+      arg = '';
+      key = true;
+    }
+
+  }
+  let randomTask = commands[randomizer(0,commands.length)];
+  terminalArg = randomTask.command;
+  process.argv[]
+}
+
+/**
+ * @param  {number} lowerBound: is the lower range for a ranomdly generated number
+ * @param  {number} upperBound: is the upper range for a randomly generated number
+ */
+function randomizer(lowerBound, upperBound) {
+  return Math.floor(Math.random() * upperBound + lowerBound);
 }
