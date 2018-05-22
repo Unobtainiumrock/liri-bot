@@ -16,7 +16,7 @@ const randomText = fs.readFileSync(randomTextFile, 'utf-8').split('');
 
 const spotify_with_keys = new Spotify(api_keys.spotify);
 const twitter_with_keys = new Twitter(api_keys.twitter);
-const terminalArg = process.argv[2];
+let terminalArg = process.argv[2];
 
 // Wrapping the core logic inside an async IIFE so that we can use the async/await syntax.
 (async () => {
@@ -153,7 +153,7 @@ function doWhatItSays() {
     if (randomText[i] === '\n') {
       commands.push({
         command,
-        arg: arg.slice(0,-1)
+        arg: arg.slice(1,-1)
       })
       command = '';
       arg = '';
@@ -163,7 +163,12 @@ function doWhatItSays() {
   }
   let randomTask = commands[randomizer(0,commands.length)];
   terminalArg = randomTask.command;
-  process.argv[]
+  let words = randomTask.arg.split(' ');
+
+  words.forEach((word) => {
+    process.argv.push(word);
+  })
+
 }
 
 /**
