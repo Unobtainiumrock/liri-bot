@@ -1,7 +1,7 @@
 # LIRI Bot
 
 This is a node.js application that experiments with using a few node modules for interacting with some API's.
-These modules include the twitter package and node-spotify-api package. In addition to these, the OMDB API is interacted with (not utilizing tools from npm) to grab movie data. 
+These modules include the twitter package and node-spotify-api package, and request.
 
 ## Requirements
 * [Node.js](https://nodejs.org/en/download/) and `npm`. Don't worry about install npm separately. It comes included with a Node.js download.
