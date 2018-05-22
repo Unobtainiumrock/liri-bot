@@ -30,6 +30,8 @@ let terminalArg = process.argv[2];
     let tweets = await getTweets(userName);
     tweets.forEach((tweet) => {
       console.log(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
+      appendFile(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
+      // appendFile('\n' + userName + 'tweeted " ');
     })
   }
 
@@ -44,14 +46,14 @@ let terminalArg = process.argv[2];
     let movie = process.argv.slice(3).join(' ');
     let movieInfo = await getMovie(movie);
     for (let key in movieInfo) {
-      console.log(`${key}: ${movieInfo[key]}`);
+      console.log(`${key}: ${movieInfo[key]}`);``
     }
   }
 })()
 
 /**
- * @param  {string} screen_name: Is a provided user screename. I've set this up to work for checking
- * tweets on any provided Twitter account
+ * @param  {string} screen_name: Is a provided user screename. I've set this up to work for checking tweets on any provided Twitter account
+ * @returns a collection of tweets as an array of tweet objects
  */
 async function getTweets(screen_name) {
   let params = { screen_name }
@@ -71,6 +73,7 @@ async function getTweets(screen_name) {
 
 /**
  * @param  {string} query: Is a requested song title
+ * @returns an object containing song data
  */
 async function getSong(query /*= 'Put Me Back Together'*/) {
   query = query || 'Put Me Back Together';
@@ -86,12 +89,12 @@ async function getSong(query /*= 'Put Me Back Together'*/) {
     album,
     query
   }
-
   return songData;
 }
 
 /**
  * @param  {string} s: Is a movie title provided to be searched for.
+ * @returns an object containing movie data
  */
 async function getMovie(t) {
   t = t || 'The Matrix';
@@ -116,10 +119,14 @@ async function getMovie(t) {
     Actors,
     rottenTomatoes
   }
-
   return movieData;
 }
 
+/**
+ * Does a lot of magic to change process.argv data to a random command pulled from random.txt
+ * these changes to process.argv happen before all the other if blocks are hit in the asycn IIFE, so
+ * the respective command is executed to whatver process.argv says should be executed
+ */
 function doWhatItSays() {
   let commands = [];
   let command = '';
@@ -166,6 +173,9 @@ function randomizer(lowerBound, upperBound) {
   return Math.floor(Math.random() * upperBound + lowerBound);
 }
 
-function writeFile(data) {
-  fs.writeFileSync('log.json',JSON.stringify(data));
+/**
+ * @param  {string} data: is the data we will append to our file.
+ */
+function appendFile(data) {
+  fs.appendFileSync('log.txt','\n' + data + '\n');
 }
