@@ -2,51 +2,58 @@
 
 // Configure environment with API keys
 require('dotenv').config();
-// Pull in modules
+
 const api_keys = require('./keys.js');
 const Spotify = require('node-spotify-api');
 const Twitter = require('twitter');
-const request = require('request');
+const request = require('request-promise-native');
+const param = require('jquery-param');
 
-// Store API keys
+
 const spotify_with_keys = new Spotify(api_keys.spotify);
 const twitter_with_keys = new Twitter(api_keys.twitter);
-
 const terminalArg = process.argv[2];
-// * `spotify-this-song`
-// * `movie-this`
+
 // * `do-what-it-says`
 
 
-// Wrapping the core logic inside an async IIFE so that we can use the async/await syntax for everything.
+// Wrapping the core logic inside an async IIFE so that we can use the async/await syntax.
 (async () => {
   if (terminalArg === 'my-tweets') {
     let userName = process.argv[3];
-    console.log(await getTweets(userName));
+    let tweets = await getTweets(userName);
+    tweets.forEach((tweet) => {
+      console.log(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
+    })
   }
-  
+
   if (terminalArg === 'spotify-this-song') {
     let song = process.argv.slice(3).join(' ');
-    // getSong(song);
+    let songInfo = await getSong(song);
+    let { artist, preview, album, query } = songInfo;
+    console.log(`${query} is a song from ${artist}'s album --${album}. Have a listen at ${preview}`);
   }
-  
+
   if (terminalArg === 'movie-this') {
     let movie = process.argv.slice(3).join(' ');
-    getMovie(movie);
+    let movieInfo = await getMovie(movie);
+    for(let key in movieInfo) {
+      console.log(`${key}: ${movieInfo[key]}`);
+    }
   }
 })()
 
 /**
- * @param  {string} screen_name: Is a provided user screename. I've set this up to work for checking any Twitter
- *
+ * @param  {string} screen_name: Is a provided user screename. I've set this up to work for checking
+ * tweets on any provided Twitter account
  */
-async function getTweets(screen_name) {
-
+function getTweets(screen_name) {
   let params = { screen_name };
   let answer;
 
-  answer = await twitter_with_keys.get('statuses/user_timeline', params)
+  answer = twitter_with_keys.get('statuses/user_timeline', params)
     .then((tweets) => {
+      tweets = tweets.slice(0, 20);
       let tweetCollection = tweets.map((tweet) => {
         let { created_at, text } = tweet;
         let tweetData = {
@@ -60,20 +67,66 @@ async function getTweets(screen_name) {
   return answer;
 }
 
-async function getSong() {
-  spotify_with_keys.search({ type: 'track', query: 'All the Small Things' })
+/**
+ * @param  {string} query: Is a requested song title
+ */
+function getSong(query /*= 'Put Me Back Together'*/) {
+  query = query || 'Put Me Back Together';
+  let answer;
+
+  answer = spotify_with_keys.search({ type: 'track', query, limit: 1 })
     .then((res) => {
-      console.log(res);
+      let artist = res.tracks.items[0].album.artists[0].name;
+      let preview = res.tracks.items[0].album.external_urls.spotify;
+      let album = res.tracks.items[0].album.name;
+
+      let songData = {
+        artist,
+        preview,
+        album,
+        query
+      }
+      return songData;
     })
     .catch((err) => {
       console.log(err);
     })
+  return answer;
+}
+/**
+ * @param  {string} s: Is a movie title provided to be searched for.
+ */
+function getMovie(t) {
+  t = t || 'Mr. Nobody';
+  let answer;
+  let queryUrl = 'http://www.omdbapi.com/?apikey=trilogy&';
+
+  queryUrl += param({
+    t
+  })
+
+  answer = request(queryUrl)
+    .then((res) => {
+      let { Title, Year, imdbRating, Country, Language, Plot, Actors, Ratings } = JSON.parse(res);
+      let rottenTomatoes = `Rotten Tomatoes rating: ${Ratings[1].Value}`;
+      let movieData = {
+        Title,
+        Year,
+        imdbRating,
+        Country,
+        Language,
+        Plot,
+        Actors,
+        rottenTomatoes
+      };
+      return movieData;
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  return answer;
 }
 
-async function getMovie() {
-
-}
-
-async function doWhatItSays() {
+function doWhatItSays() {
 
 }
