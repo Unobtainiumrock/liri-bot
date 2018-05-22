@@ -18,40 +18,49 @@ const terminalArg = process.argv[2];
 // * `do-what-it-says`
 
 
+// Wrapping the core logic inside an async IIFE so that we can use the async/await syntax for everything.
+(async () => {
+  if (terminalArg === 'my-tweets') {
+    let userName = process.argv[3];
+    console.log(await getTweets(userName));
+  }
+  
+  if (terminalArg === 'spotify-this-song') {
+    let song = process.argv.slice(3).join(' ');
+    // getSong(song);
+  }
+  
+  if (terminalArg === 'movie-this') {
+    let movie = process.argv.slice(3).join(' ');
+    getMovie(movie);
+  }
+})()
 
-if (terminalArg === 'my-tweets') {
-  let userName = process.argv[3];
-  getTweets(userName);
-}
-
-if (terminalArg === 'spotify-this-song') {
-  let song = process.argv.slice(3).join(' ');
-  getSong(song);
-}
-
-if (terminalArg === 'movie-this') {
-  let movie = process.argv.slice(3).join(' ');
-  getMovie(movie);
-}
-
-
-
-
-
-// FUNCTIONS
-function getTweets(screen_name) {
+/**
+ * @param  {string} screen_name: Is a provided user screename. I've set this up to work for checking any Twitter
+ *
+ */
+async function getTweets(screen_name) {
 
   let params = { screen_name };
+  let answer;
 
-  twitter_with_keys.get('statuses/user_timeline', params, function (error, tweets, response) {
-    if (!error) {
-      console.log(tweets);
-    }
-  });
-
+  answer = await twitter_with_keys.get('statuses/user_timeline', params)
+    .then((tweets) => {
+      let tweetCollection = tweets.map((tweet) => {
+        let { created_at, text } = tweet;
+        let tweetData = {
+          created_at,
+          text
+        };
+        return tweetData;
+      });
+      return tweetCollection;
+    })
+  return answer;
 }
 
-function getSong() {
+async function getSong() {
   spotify_with_keys.search({ type: 'track', query: 'All the Small Things' })
     .then((res) => {
       console.log(res);
@@ -61,10 +70,10 @@ function getSong() {
     })
 }
 
-function getMovie() {
+async function getMovie() {
 
 }
 
-function doWhatItSays() {
+async function doWhatItSays() {
 
 }
