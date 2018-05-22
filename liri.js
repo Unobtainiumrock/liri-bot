@@ -26,7 +26,7 @@ let terminalArg = process.argv[2];
   }
 
   if (terminalArg === 'my-tweets') {
-    let userName = process.argv[3];
+    let userName = process.argv[3] || 'Oracle';
     let tweets = await getTweets(userName);
     tweets.forEach((tweet) => {
       console.log(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
@@ -53,57 +53,48 @@ let terminalArg = process.argv[2];
  * @param  {string} screen_name: Is a provided user screename. I've set this up to work for checking
  * tweets on any provided Twitter account
  */
-function getTweets(screen_name) {
-  let params = { screen_name };
-  let answer;
+async function getTweets(screen_name) {
+  let params = { screen_name }
+  let tweets = await twitter_with_keys.get('statuses/user_timeline',params);
 
-  answer = twitter_with_keys.get('statuses/user_timeline', params)
-    .then((tweets) => {
-      tweets = tweets.slice(0, 20);
-      let tweetCollection = tweets.map((tweet) => {
-        let { created_at, text } = tweet;
-        let tweetData = {
-          created_at,
-          text
-        };
-        return tweetData;
-      });
-      return tweetCollection;
-    })
-  return answer;
+  tweets = tweets.map((tweet) => {
+    let { created_at, text } = tweet;
+    let tweetData = {
+      created_at,
+      text
+    };
+    return tweetData;
+  });
+  
+  return tweets;
 }
 
 /**
  * @param  {string} query: Is a requested song title
  */
-function getSong(query /*= 'Put Me Back Together'*/) {
+async function getSong(query /*= 'Put Me Back Together'*/) {
   query = query || 'Put Me Back Together';
-  let answer;
+  
+  let song = await spotify_with_keys.search({type: 'track', query, limit: 1 })
+  let artist = song.tracks.items[0].album.artists[0].name;
+  let preview = song.tracks.items[0].album.external_urls.spotify;
+  let album = song.tracks.items[0].album.name;
 
-  answer = spotify_with_keys.search({ type: 'track', query, limit: 1 })
-    .then((res) => {
-      let artist = res.tracks.items[0].album.artists[0].name;
-      let preview = res.tracks.items[0].album.external_urls.spotify;
-      let album = res.tracks.items[0].album.name;
+  let songData = {
+    artist,
+    preview,
+    album,
+    query
+  }
 
-      let songData = {
-        artist,
-        preview,
-        album,
-        query
-      }
-      return songData;
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  return answer;
+  return songData;
 }
+
 /**
  * @param  {string} s: Is a movie title provided to be searched for.
  */
-function getMovie(t) {
-  t = t || 'Mr. Nobody';
+async function getMovie(t) {
+  t = t || 'The Matrix';
   let answer;
   let queryUrl = 'http://www.omdbapi.com/?apikey=trilogy&';
 
@@ -111,26 +102,22 @@ function getMovie(t) {
     t
   })
 
-  answer = request(queryUrl)
-    .then((res) => {
-      let { Title, Year, imdbRating, Country, Language, Plot, Actors, Ratings } = JSON.parse(res);
-      let rottenTomatoes = `Rotten Tomatoes rating: ${Ratings[1].Value}`;
-      let movieData = {
-        Title,
-        Year,
-        imdbRating,
-        Country,
-        Language,
-        Plot,
-        Actors,
-        rottenTomatoes
-      };
-      return movieData;
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  return answer;
+  let movie = await request(queryUrl);
+  let { Title, Year, imdbRating, Country, Language, Plot, Actors, Ratings } = JSON.parse(movie);
+  let rottenTomatoes = `Rotten Tomatoes rating: ${Ratings[1].Value}`;
+
+  let movieData = {
+    Title,
+    Year,
+    imdbRating,
+    Country,
+    Language,
+    Plot,
+    Actors,
+    rottenTomatoes
+  }
+
+  return movieData;
 }
 
 function doWhatItSays() {
@@ -177,4 +164,8 @@ function doWhatItSays() {
  */
 function randomizer(lowerBound, upperBound) {
   return Math.floor(Math.random() * upperBound + lowerBound);
+}
+
+function writeFile(data) {
+  fs.writeFileSync('log.json',JSON.stringify(data));
 }
