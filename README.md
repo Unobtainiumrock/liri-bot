@@ -19,9 +19,29 @@ cd LIRIBOT
 
 npm install
 ```
+**Create two files for storing API keys and setting up environment variables**
+* create a file named `keys.js` with the following content
+```javascript
+console.log('this is loaded');
 
+exports.twitter = {
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+};
 
-#### Example Commands
+exports.spotify = {
+  id: process.env.SPOTIFY_ID,
+  secret: process.env.SPOTIFY_SECRET
+};
+
+```
+* create a file named `.env` with the following content
+```
+```
+
+## Example Commands
 Each terminal command can be called without providing your own Tweet handler, movie, or song name -They will default to provided search values. Try these commands out with/without providing your own values. Make sure to be in the app root level where liri.js resides
 
 ```
