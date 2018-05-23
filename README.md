@@ -4,13 +4,33 @@ This is a node.js application that experiments with using a few node modules for
 These modules include the twitter package and node-spotify-api package, and request.
 
 ## Requirements
-* [Node.js](https://nodejs.org/en/download/) and `npm`. Don't worry about install npm separately. It comes included with a Node.js download.
-* IMPORTANT make sure you have at least Node version 7.6 for async await to run properly
+* Install [Node.js](https://nodejs.org/en/download/) with the included npm.
+* IMPORTANT make sure you have at least Node version 7.6 for `async/await` to run properly.
 
-## Getting Started -How to
-```git clone``` a copy to your local machine
-```cd``` into the root of the project. Make sure you're in the right location by running `ls`
+## Getting Started How to
+```
+git clone https://github.com/Unobtainiumrock/liri-bot.git 
 
+cd LIRIBOT
+
+npm install
+
+```
+
+
+#### Example Commands
+Each terminal command can be called without providing your own Tweet handler, movie, or song name -They will default to provided search values. Try these commands out with/without providing your own values!
+
+```
+node liri.js do-what-it-says
+
+node liri.js my-tweets
+
+node liri.js spotify-this-song
+
+node liri.js movie-this
+
+```
 
 
 
