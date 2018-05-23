@@ -37,7 +37,7 @@ exports.spotify = {
 };
 ```
 
-* create a file named `.env` with the following content
+* create a file named `.env` with the following content and replace the place holders to your own API keys and secrets
 ```
 # Spotify API keys
 
