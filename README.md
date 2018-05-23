@@ -8,8 +8,8 @@ These modules include the twitter package and node-spotify-api package, and requ
 * IMPORTANT make sure you have at least Node version 7.6 for async await to run properly
 
 ## Getting Started -How to
-`git clone` a copy to your local machine
-`cd` into the root of the project. Make sure you're in the right location by running `ls`
+```git clone``` a copy to your local machine
+```cd``` into the root of the project. Make sure you're in the right location by running `ls`
 
 
 
@@ -18,11 +18,15 @@ These modules include the twitter package and node-spotify-api package, and requ
 
 * [Javascript](https://eloquentjavascript.net/)
 * [Node](https://nodejs.org/en/)
+
 #### Node Modules used
-* [dotenv](https://www.npmjs.com/package/dotenv)
-* [node-spotify-api](https://www.npmjs.com/package/node-spotify-api)
-* [request](https://www.npmjs.com/package/request)
-* [twitter](https://css-tricks.com/)
+* [dotenv](https://github.com/motdotla/dotenv)
+* [jquery-param](https://github.com/knowledgecode/jquery-param)
+* [node-spotify-api](https://github.com/ceckenrode/node-spotify-api)
+* [request](https://github.com/request/request)
+* [request-promise-native](https://github.com/request/request-promise-native)
+* [twitter](https://github.com/desmondmorris/node-twitter)
+
 
 
 ## Authors
