@@ -37,12 +37,10 @@ let terminalArg = process.argv[2];
   if (terminalArg === 'spotify-this-song') {
     let song = process.argv.slice(3).join(' ');
     let songInfo = await getSong(song);
-    let { artist, preview, album, query } = songInfo;
     appendFile('======= Song =======');
-    appendFile(`Song Name:${query}`);
-    appendFile(`Artist: ${artist}`);
-    appendFile(`Album: ${album}`); 
-    appendFile(`Preview: ${preview}`);
+    for (let key in songInfo) {
+      appendFile(`${key}: ${songInfo[key]}`);
+    }
   }
 
   if (terminalArg === 'movie-this') {
@@ -79,19 +77,19 @@ async function getTweets(screen_name) {
  * @param  {string} query: Is a requested song title
  * @returns an object containing song data
  */
-async function getSong(query /*= 'Put Me Back Together'*/) {
-  query = query || 'Put Me Back Together';
+async function getSong(Track /*= 'Put Me Back Together'*/) {
+  Track = Track || 'Put Me Back Together';
   
-  let song = await spotify_with_keys.search({type: 'track', query, limit: 1 })
-  let artist = song.tracks.items[0].album.artists[0].name;
-  let preview = song.tracks.items[0].album.external_urls.spotify;
-  let album = song.tracks.items[0].album.name;
+  let song = await spotify_with_keys.search({type: 'track', query: Track, limit: 1 })
+  let Artist = song.tracks.items[0].album.artists[0].name;
+  let Preview = song.tracks.items[0].album.external_urls.spotify;
+  let Album = song.tracks.items[0].album.name;
 
   let songData = {
-    artist,
-    preview,
-    album,
-    query
+    Artist,
+    Album,
+    Track,
+    Preview
   }
   return songData;
 }
