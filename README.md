@@ -12,10 +12,11 @@ These modules include the twitter package and node-spotify-api package, and requ
 * [Spotify API](https://beta.developer.spotify.com/documentation/web-api/)
 
 ## Terminal: Getting Started How to
+**Run the following commands in your terminal**
 ```
 git clone https://github.com/Unobtainiumrock/liri-bot.git 
 
-cd LIRIBOT
+cd liri-bot
 
 npm install
 ```

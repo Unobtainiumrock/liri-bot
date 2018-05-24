@@ -28,6 +28,7 @@ let terminalArg = process.argv[2];
   if (terminalArg === 'my-tweets') {
     let userName = process.argv[3] || 'Oracle';
     let tweets = await getTweets(userName);
+    appendFile('======= Tweets =======')
     tweets.forEach((tweet) => {
       console.log(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
       appendFile(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
@@ -39,14 +40,18 @@ let terminalArg = process.argv[2];
     let song = process.argv.slice(3).join(' ');
     let songInfo = await getSong(song);
     let { artist, preview, album, query } = songInfo;
+    appendFile('======= Song =======');
     console.log(`${query} is a song from ${artist}'s album --${album}. Have a listen at ${preview}`);
+    appendFile(`${query} is a song from ${artist}'s album --${album}. Have a listen at ${preview}`);
   }
 
   if (terminalArg === 'movie-this') {
     let movie = process.argv.slice(3).join(' ');
     let movieInfo = await getMovie(movie);
+    appendFile('======= Movie =======');
     for (let key in movieInfo) {
-      console.log(`${key}: ${movieInfo[key]}`);``
+      console.log(`${key}: ${movieInfo[key]}`);
+      appendFile(`${key}: ${movieInfo[key]}`);
     }
   }
 })()
