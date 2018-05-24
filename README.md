@@ -68,7 +68,7 @@ node liri.js movie-this
 
 ## Demo
 After completing all of the steps above, the application should behave as shown here below. 
-
+<a href="https://imgflip.com/gif/2aw74u"><img src="https://i.imgflip.com/2aw74u.gif" title="made at imgflip.com"/></a>
 ## Built With
 
 * [Javascript](https://eloquentjavascript.net/)
