@@ -2,6 +2,7 @@
 
 This is a node.js application that experiments with using a few node modules for interacting with some API's.
 These modules include the twitter package and node-spotify-api package, and request.
+<img src="demo.gif" height="375" width="600"/>
 
 ## Requirements and Setup
 * Install [Node.js](https://nodejs.org/en/download/) with the included npm.
@@ -13,6 +14,7 @@ These modules include the twitter package and node-spotify-api package, and requ
 
 ## Terminal: Getting Started How to
 **Run the following commands in your terminal**
+
 ```
 git clone https://github.com/Unobtainiumrock/liri-bot.git 
 
@@ -66,9 +68,6 @@ node liri.js spotify-this-song
 node liri.js movie-this
 ```
 
-## Demo
-After completing all of the steps above, the application should behave as shown here below. 
-<img src="demo.gif" height="375" width="600"/>
 ## Built With
 
 * [Javascript](https://eloquentjavascript.net/)
