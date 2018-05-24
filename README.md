@@ -66,7 +66,8 @@ node liri.js spotify-this-song
 node liri.js movie-this
 ```
 
-
+## Demo
+After completing all of the steps above, the application should behave as shown here below. 
 
 ## Built With
 
