@@ -50,7 +50,6 @@ let terminalArg = process.argv[2];
     let movieInfo = await getMovie(movie);
     appendFile('======= Movie =======');
     for (let key in movieInfo) {
-      console.log(`${key}: ${movieInfo[key]}`);
       appendFile(`${key}: ${movieInfo[key]}`);
     }
   }
@@ -106,9 +105,7 @@ async function getMovie(t) {
   let answer;
   let queryUrl = 'http://www.omdbapi.com/?apikey=trilogy&';
 
-  queryUrl += param({
-    t
-  })
+  queryUrl += param({t});
 
   let movie = await request(queryUrl);
   let { Title, Year, imdbRating, Country, Language, Plot, Actors, Ratings } = JSON.parse(movie);
