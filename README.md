@@ -6,7 +6,7 @@ These modules include the twitter package and node-spotify-api package, and requ
 
 ## Requirements and Setup
 * Install [Node.js](https://nodejs.org/en/download/) with the included npm.
-* IMPORTANT make sure you have at least Node version 7.6 for [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) to run properly.
+* &#x1F534; **_IMPORTANT!!!!! make sure you have at least Node version 7.6 for [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) to run properly._** &#x1F534;
 
 **Create accounts at the following services to receive API keys**
 * [Twitter Apps](https://apps.twitter.com/)
