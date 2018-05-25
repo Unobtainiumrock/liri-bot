@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Unobtainiumrock/liri-bot#readme",
   "dependencies": {
     "dotenv": "^5.0.1",
+    "figlet": "^1.2.0",
     "jquery-param": "^1.0.1",
     "node-spotify-api": "^1.0.7",
     "request": "^2.86.0",

@@ -9,14 +9,20 @@ const Twitter = require('twitter');
 const request = require('request-promise-native');
 const param = require('jquery-param');
 const fs = require('fs');
-
-const randomTextFile = fs.readdirSync(__dirname).filter(file => file === 'random.txt')[0];
-const randomText = fs.readFileSync(randomTextFile, 'utf-8').split('');
+const figlet = require('figlet');
 
 
 const spotify_with_keys = new Spotify(api_keys.spotify);
 const twitter_with_keys = new Twitter(api_keys.twitter);
 let terminalArg = process.argv[2];
+
+const randomText = fs.readFileSync('random.txt', 'utf-8').split('');
+
+console.log(figlet.textSync('LIRI',{
+    font: 'Standard',
+    horizontalLayout: 'default',
+    verticalLayout: 'default'
+}));
 
 // Wrapping the core logic inside an async IIFE so that we can use the async/await syntax.
 (async () => {
@@ -32,6 +38,7 @@ let terminalArg = process.argv[2];
     tweets.forEach((tweet) => {
       appendFile(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
     })
+    userFeedback();
   }
 
   if (terminalArg === 'spotify-this-song') {
@@ -41,6 +48,7 @@ let terminalArg = process.argv[2];
     for (let key in songInfo) {
       appendFile(`${key}: ${songInfo[key]}`);
     }
+    userFeedback();
   }
 
   if (terminalArg === 'movie-this') {
@@ -50,6 +58,7 @@ let terminalArg = process.argv[2];
     for (let key in movieInfo) {
       appendFile(`${key}: ${movieInfo[key]}`);
     }
+    userFeedback();
   }
 })()
 
@@ -178,4 +187,14 @@ function randomizer(lowerBound, upperBound) {
  */
 function appendFile(data) {
   fs.appendFileSync('log.txt','\n' + data + '\n');
+}
+
+/**
+ * Displays feedback to the user in the terminal to let them know where their query results are
+ * being written to
+ */
+function userFeedback() {
+  console.log('\n==============================================\n');
+  console.log("I've went ahead and query results into log.txt");
+  console.log('\n==============================================\n');
 }
