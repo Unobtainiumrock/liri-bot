@@ -18,10 +18,10 @@ let terminalArg = process.argv[2];
 
 const randomText = fs.readFileSync('random.txt', 'utf-8').split('');
 
-console.log(figlet.textSync('LIRI',{
-    font: 'Standard',
-    horizontalLayout: 'default',
-    verticalLayout: 'default'
+console.log(figlet.textSync('LIRI', {
+  font: 'Standard',
+  horizontalLayout: 'default',
+  verticalLayout: 'default'
 }));
 
 // Wrapping the core logic inside an async IIFE so that we can use the async/await syntax.
@@ -34,31 +34,49 @@ console.log(figlet.textSync('LIRI',{
   if (terminalArg === 'my-tweets') {
     let userName = process.argv[3] || 'Oracle';
     let tweets = await getTweets(userName);
-    appendFile('======= Tweets =======')
+
+    appendFile(headerFooter('Tweets'));
+
     tweets.forEach((tweet) => {
-      appendFile(`${userName} tweeted "${tweet.text}" at: ${tweet.created_at}`);
+      console.log(`\n${userName} tweeted "${tweet.text}" at: ${tweet.created_at}\n`);
+      appendFile(`\n${userName} tweeted "${tweet.text}" at: ${tweet.created_at}\n`);
     })
-    userFeedback();
+
+    appendFile(headerFooter(null,true));
+
+    notifySavedResults();
   }
 
   if (terminalArg === 'spotify-this-song') {
     let song = process.argv.slice(3).join(' ');
     let songInfo = await getSong(song);
-    appendFile('======= Song =======');
+
+    appendFile(headerFooter('Song Info'));
+
     for (let key in songInfo) {
+      console.log(`${key}: ${songInfo[key]}`);
       appendFile(`${key}: ${songInfo[key]}`);
     }
-    userFeedback();
+
+    appendFile(headerFooter(null,true));
+ 
+    notifySavedResults();
   }
 
   if (terminalArg === 'movie-this') {
     let movie = process.argv.slice(3).join(' ');
     let movieInfo = await getMovie(movie);
-    appendFile('======= Movie =======');
+    
+    appendFile(headerFooter('Movie Info'));
+
     for (let key in movieInfo) {
+      console.log(`${key}: ${movieInfo[key]}`);
       appendFile(`${key}: ${movieInfo[key]}`);
     }
-    userFeedback();
+
+    appendFile(headerFooter(null,true));
+
+    notifySavedResults();
   }
 })()
 
@@ -68,7 +86,7 @@ console.log(figlet.textSync('LIRI',{
  */
 async function getTweets(screen_name) {
   let params = { screen_name }
-  let tweets = await twitter_with_keys.get('statuses/user_timeline',params);
+  let tweets = await twitter_with_keys.get('statuses/user_timeline', params);
 
   tweets = tweets.map((tweet) => {
     let { created_at, text } = tweet;
@@ -78,7 +96,7 @@ async function getTweets(screen_name) {
     };
     return tweetData;
   });
-  
+
   return tweets;
 }
 
@@ -88,8 +106,8 @@ async function getTweets(screen_name) {
  */
 async function getSong(Track /*= 'Put Me Back Together'*/) {
   Track = Track || 'Put Me Back Together';
-  
-  let song = await spotify_with_keys.search({type: 'track', query: Track, limit: 1 })
+
+  let song = await spotify_with_keys.search({ type: 'track', query: Track, limit: 1 })
   let Artist = song.tracks.items[0].album.artists[0].name;
   let Preview = song.tracks.items[0].album.external_urls.spotify;
   let Album = song.tracks.items[0].album.name;
@@ -112,7 +130,7 @@ async function getMovie(t) {
   let answer;
   let queryUrl = 'http://www.omdbapi.com/?apikey=trilogy&';
 
-  queryUrl += param({t});
+  queryUrl += param({ t });
 
   let movie = await request(queryUrl);
   let { Title, Year, imdbRating, Country, Language, Plot, Actors, Ratings } = JSON.parse(movie);
@@ -132,6 +150,7 @@ async function getMovie(t) {
 }
 
 /**
+ * BLACK MAGIC XD
  * Does a lot of magic to change process.argv data to a random command pulled from random.txt
  * these changes to process.argv happen before all the other if blocks are hit in the asycn IIFE, so
  * the respective command is executed to whatver process.argv says should be executed
@@ -146,7 +165,7 @@ function doWhatItSays() {
     if (randomText[i] !== '\n' && randomText[i] !== ' ' && key) {
       command += randomText[i];
     } else {
-        arg += randomText[i];
+      arg += randomText[i];
     }
 
     if (randomText[i] === ' ') {
@@ -156,7 +175,7 @@ function doWhatItSays() {
     if (randomText[i] === '\n') {
       commands.push({
         command,
-        arg: arg.slice(1,-1)
+        arg: arg.slice(1, -1)
       })
       command = '';
       arg = '';
@@ -164,7 +183,7 @@ function doWhatItSays() {
     }
 
   }
-  let randomTask = commands[randomizer(0,commands.length)];
+  let randomTask = commands[randomizer(0, commands.length)];
   terminalArg = randomTask.command;
   let words = randomTask.arg.split(' ');
 
@@ -186,15 +205,33 @@ function randomizer(lowerBound, upperBound) {
  * @param  {string} data: is the data we will append to our file.
  */
 function appendFile(data) {
-  fs.appendFileSync('log.txt','\n' + data + '\n');
+  fs.appendFileSync('log.txt',data);
 }
 
 /**
  * Displays feedback to the user in the terminal to let them know where their query results are
  * being written to
  */
-function userFeedback() {
+function notifySavedResults() {
   console.log('\n==============================================\n');
-  console.log("I've went ahead and query results into log.txt");
+  console.log("I've went ahead and query results into log.txt as well!");
   console.log('\n==============================================\n');
 }
+
+/**
+ * @param  {string} header is the corresponding name to the user's query
+ * @param  {boolean} footer is a way to determine if a footer needs to be logged or not.
+ */
+function headerFooter(header, footer) {
+  if (header) {
+    let output = `\n======= ${header} =======\n`
+    console.log(output);
+    return output;
+  }
+  if (footer) {
+    let output = `\n=====================\n`;
+    console.log(output);
+    return output;
+  }
+}
+
